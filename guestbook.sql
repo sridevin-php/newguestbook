@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2019 at 05:37 PM
+-- Generation Time: May 13, 2019 at 12:02 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.2.16
 
@@ -40,9 +40,13 @@ CREATE TABLE `guest` (
 --
 
 INSERT INTO `guest` (`id`, `comment`, `user_id`, `is_approved`) VALUES
-(1, 'My new guest book', 1, NULL),
-(2, 'My new guest book1', 1, NULL),
-(3, 'My new guest book2', 1, NULL);
+(1, 'My new guest book', 1, 1),
+(2, 'My new guest book1', 3, 0),
+(3, 'My new guest book2', 2, 0),
+(5, 'This is my new sample test', 20, 1),
+(6, 'test', NULL, NULL),
+(7, 'waweweq', NULL, NULL),
+(8, 'test', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -74,8 +78,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `email`, `password`, `username`, `roles`) VALUES
-(1, 'user@guest.com', '$2y$13$YBsQRGL/HnrJriShS4jk5uPbGm9peOSWBamV98fXh67LKNBOyOl9m', 'user', 'user'),
-(2, 'user1@guest.com', '$2y$13$YBsQRGL/HnrJriShS4jk5uPbGm9peOSWBamV98fXh67LKNBOyOl9m', 'user1', 'user');
+(1, 'user@guest.com', '$2y$13$YBsQRGL/HnrJriShS4jk5uPbGm9peOSWBamV98fXh67LKNBOyOl9m', 'user', 'ROLE_USER'),
+(5, 'admin@guest.com', '$2y$13$YBsQRGL/HnrJriShS4jk5uPbGm9peOSWBamV98fXh67LKNBOyOl9m', 'admin', 'ROLE_ADMIN');
 
 --
 -- Indexes for dumped tables
@@ -108,7 +112,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `guest`
 --
 ALTER TABLE `guest`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `user`

@@ -35,5 +35,10 @@ class GuestBookControllerTest extends TestCase
 		$this->assertSame('/guest/book',$formData['guest'] );
     }
 	
-	
+	public function testClassThatDoesNotExistCanBeDoubledUsingMockBuilder()
+    {
+       // $o = $this->createMock('GuestBookController');
+		$o = $this->getMockBuilder('GuestBook')->getMock();
+        $this->assertInstanceOf('GuestBook', $o);
+    }
 }

@@ -35,18 +35,18 @@ class GuestControllerTest extends TestCase
    public function getFrameworkForException($exception)
     {
 		// $Guest = $this->createMock( Guest::class);
-		 $Guest = $this->getMockBuilder('GuestBook')->getMock();
-        $this->assertInstanceOf('GuestBook', $Guest);
+		 $Guest = $this->getMockBuilder('Guest')->getMock();
+        $this->assertInstanceOf('Guest', $Guest);
 		 
 		 
         $Guest
             ->expects($this->once())
             ->method('testNew')
-            ->will($this->returnValue($this->createMock(Routing\RequestContext::class)))
+            ->will($this->returnValue($this->getMockBuilder(Routing\RequestContext::class)->getMock()))
         ;
         $controllerResolver = $this->getMockBuilder(ControllerResolverInterface::class)->getMock();
         $argumentResolver = $this->getMockBuilder(ArgumentResolverInterface::class)->getMock();
-		//$this->assertInstanceOf('Guest', $controllerResolver);
+		$this->assertInstanceOf('Guest', $controllerResolver);
         return new Framework($Guest, $controllerResolver, $argumentResolver);
          
     }
@@ -54,21 +54,23 @@ class GuestControllerTest extends TestCase
     public function testNew() 
     {
 		 
-        $guest = new Guest();
-        // $objectToCompare will retrieve data from the form submission; pass it as the second argument
+       $guest = new Guest();
+         
       $formData = [
             'comment' => 'test',
             'user_id' => '23',
             'guest' => '/guest',
             'is_approved' => '1',
         ];  
+		 $Guest = $this->getMockBuilder('Guest')->getMock();
+        $this->assertInstanceOf('Guest', $Guest);
+		 
         $this->assertCount(
             4,
              $formData,
             'check on mandates'
         );
 		$this->assertSame('/guest',$formData['guest'] );
-		 
     }
 	 
 

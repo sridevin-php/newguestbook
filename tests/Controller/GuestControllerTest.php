@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\GuestController;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Guest;
 use App\Form\Guest1Type;
 use App\Repository\GuestRepository;
@@ -12,87 +13,92 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+ 
+
+ 
+ 
 /**
  * @Route("/guest")
  */
 class GuestControllerTest extends TestCase
 {
-    /**
-     * @Route("/", name="guest_index", methods={"GET"})
-     */
-    public function testindex(GuestRepository $guestRepository): Response
+   public function testIndex()
     {
-        return $this->render('guest/index.html.twig', [
-            'guests' => $guestRepository->findAll(),
-        ]);
+		
+		 $this->assertCount(
+            1,
+             ['guest'],
+            'The Guets Home page displays with right Guest book entry'
+        );
+         
     }
-
-    /**
+	/**
      * @Route("/new", name="guest_new", methods={"GET","POST"})
      */
-    public function testnew(Request $request): Response
+    public function testNew() 
     {
+		 
         $guest = new Guest();
-        $form = $this->createForm(Guest1Type::class, $guest);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($guest);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('guest_index');
-        }
-
-        return $this->render('guest/new.html.twig', [
-            'guest' => $guest,
-            'form' => $form->createView(),
-        ]);
+        // $objectToCompare will retrieve data from the form submission; pass it as the second argument
+      $formData = [
+            'comment' => 'test',
+            'user_id' => '23',
+            'guest' => '/guest',
+            'is_approved' => '1',
+        ];  
+        $this->assertCount(
+            4,
+             $formData,
+            'check on mandates'
+        );
+		$this->assertSame('/guest',$formData['guest'] );
+		 
     }
-
-    /**
-     * @Route("/{id}", name="guest_show", methods={"GET"})
-     */
-    public function testshow(Guest $guest): Response
+	 /*
+    public function testCompleteScenario()
     {
-        return $this->render('guest/show.html.twig', [
-            'guest' => $guest,
-        ]);
+        // Create a new client to browse the application
+        $client = static::createClient();
+
+        // Create a new entry in the database
+        $crawler = $client->request('GET', '/user/');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /user/");
+        $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
+
+        // Fill in the form and submit it
+        $form = $crawler->selectButton('Create')->form(array(
+            'custom_bookbundle_user[field_name]'  => 'Test',
+            // ... other fields to fill
+        ));
+
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        // Check data in the show view
+        $this->assertGreaterThan(0, $crawler->filter('td:contains("Test")')->count(), 'Missing element td:contains("Test")');
+
+        // Edit the entity
+        $crawler = $client->click($crawler->selectLink('Edit')->link());
+
+        $form = $crawler->selectButton('Update')->form(array(
+            'custom_bookbundle_user[field_name]'  => 'Foo',
+            // ... other fields to fill
+        ));
+
+        $client->submit($form);
+        $crawler = $client->followRedirect();
+
+        // Check the element contains an attribute with value equals "Foo"
+        $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
+
+        // Delete the entity
+        $client->submit($crawler->selectButton('Delete')->form());
+        $crawler = $client->followRedirect();
+
+        // Check the entity has been delete on the list
+        $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
     }
 
-    /**
-     * @Route("/{id}/edit", name="guest_edit", methods={"GET","POST"})
-     */
-    public function testedit(Request $request, Guest $guest): Response
-    {
-        $form = $this->createForm(Guest1Type::class, $guest);
-        $form->handleRequest($request);
+    */
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('guest_index', [
-                'id' => $guest->getId(),
-            ]);
-        }
-
-        return $this->render('guest/edit.html.twig', [
-            'guest' => $guest,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="guest_delete", methods={"DELETE"})
-     */
-    public function testdelete(Request $request, Guest $guest): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$guest->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($guest);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('guest_index');
-    }
 }

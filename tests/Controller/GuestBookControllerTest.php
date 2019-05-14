@@ -16,26 +16,24 @@ class GuestBookControllerTest extends TestCase
     /**
      * @Route("/guest/book", name="guest_book")
      */
-    public function testindex(Request $request)
+    public function testindex()
     {
-		$guest = new Guest();
-		$form = $this->createForm(GuestType::class, $guest, [
-			'action' => $this->generateUrl('guest_book')		
-		]);
-		$form->handleRequest($request);
-		if($form->isSubmitted() && $form->isValid())
-		{
-			
-			$em=$this->getDoctrine()->getManager();
-			$user = $this->container->get('security.token_storage')->getToken()->getUser();
-			 
-			$em->persist($guest);
-			//$guest->setUserId($user);
-			$em->flush();
-			//start DB
-		}
-        return $this->render('guest_book/index.html.twig', [
-            'guest_form'=> $form ->createView()
-        ]);
+		 
+        $guest = new Guest();
+        // $objectToCompare will retrieve data from the form submission; pass it as the second argument
+      $formData = [
+            'comment' => 'This is new comment added by user a s guest book entry',
+            'user_id' => '346',
+            'guest' => '/guest/book'
+            
+        ];  
+        $this->assertCount(
+            3,
+             $formData,
+            'check on mandates'
+        );
+		$this->assertSame('/guest/book',$formData['guest'] );
     }
+	
+	
 }
